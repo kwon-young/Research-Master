@@ -128,4 +128,142 @@
 * defined computation rules (rewriting)
 * small-step or big-step
 * gives a microscopic vision of the meaning
-*
+
+Résumé
+
+* langage formel
+  * un terme est un model
+  * syntax
+    * abstraite : défini de manière algébrique, un terme est un arble
+      * les feuille sont ou bien des variable ou des constantes
+      * les noeuds sont des constructeurs ou lieur
+      * définition par induction
+  * sémantique : donner du sens
+    * sémantique axiomatique
+    * sémantique dénatotionnel
+    * sémantique calculatoire
+
+## Reduction of ^x
+
+Church-Rosser theorem
+
+> Bheta-reduction is confluent on ^x
+
+* a term has at most one normal form
+* reduction strategy
+  * by value : innermost reduction
+  * by name : the outermost reduction
+
+## is ^x a programming language
+
+* in theory, ^x is turing complete
+* in practice, not usable by human
+* we extend its core with
+  * basic datatype (integer, boolean, ...)
+  * data structures (pairs, lists, ...)
+  * recursion
+  * ...
+
+## Church numerals
+
+*Faire les exercices*
+
+## classifying terms of ^x
+
+* some terms have odd comportement
+  * only finit reductions, well-behaved
+  * have both finite and infinite reductions
+  * have only infinite reductions
+* we want to get rid of infinite reductions
+  * two ways
+  * use a stricter syntax (often impractible)
+  * we use types and then work on the subset of well-typed terms
+* types are names for sets of terms
+* => tpes are about classification of terms
+  * structurally (on their syntax)
+  * and / or behaviorally
+
+## From mathematics to Fortran
+
+* Russel's paradox
+
+## Judgment and inference rule
+
+* we try to link a type to a term
+* a *judgement* is a logical assertion
+* there exists various forms of judgment
+  * term -> other term
+  * environment |- term => Value
+  * environment |- term : Type
+* an *inference rule* is a collection of judgments
+  * the *premises* (j1, ..., jn)
+  * and the *conclusion*
+
+## Derivation
+
+* a *derivation* (or proof) is a tree of such rules where the leaves are axioms
+* this tree can be build
+  * from axiom to conclusion using *forward chaining*
+    * blind search
+  * from conclusion to axioms using *backward chaining*
+    * goal directed search in the judgment space
+* syntactic reasoning
+* inference proof cannot proove that something is not true
+* no way to say a judgment is not derivable
+
+## Type systems
+
+* a set of rules
+* A *Type Judgment* has-type assertion : gamma |- Term : tau
+  * gama being a *typing context* colleecting the types of variables
+* a *Type Rule* is an implication between type judgments
+  * int + int = int
+* type system (TS) is a set of type rules
+* *Type Derivation* is a logical deduction based on a TS
+* *Type Language*
+
+## Type Checks
+
+* *Type Checking*
+* *Typeability* : does my problem is derivable
+* type inference (or type reconstruction) algorithm 
+* Typeability is a lot harder than type checking
+
+## Properties of the simply typed ^x-calculus
+
+R. Milner in [Mil78]
+> well-typed programs cannot "go wrong"
+
+* strong normalization
+  * a well-typed term has only finite reduction sequences
+  * beta-reduction is strongly normalizing on ^xT
+* proof is harder, it is not a direct induction
+  * see [Pied02, ch12]
+* is omega typeable (omega is infinite reduction)
+  * so no, it is not typeable
+* ^xT is not turing-complete
+
+## static type checking
+
+* more generally, Halting and Error discovery are undecidable
+* to be decidable, a TS must use a safe approximation
+* TS must reject some correct (but too complicated) terms
+
+=> STS goes against flexibility and need a compromise
+=> To achieve safety, we have to use runtime checks (array bound)
+
+## formal definition of a TS
+
+* the language definition
+* type language definition
+* set of Forbidden errors
+* set of typing rules
+* operational semantics of the language
+* a proof of TS Soundness relative to semantics stating
+
+*a typed program cannot cause forbidden errors*
+
+* note on semantics of types
+  * we haven't precisely stated what is a type
+  * if we do not use too complex type relations, it is not necessary
+  * usual interpretations of types: sets, ideal, tree

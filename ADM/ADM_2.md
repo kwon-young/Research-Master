@@ -103,5 +103,33 @@ PCA the easy way
 * maximize the variance
 * maximize inertia
 * least square error
+* projecting and creating new variable
 
+* vocabulary
+  * principal axis or factor
+  * principal components
+
+* Result interpretation and quality
+* interpretation
+  * correlation between components and variables
+
+* bad property of PCA
+  * disregard the information on the class of each samples
+
+Linear discriminant analysis
+
+* create a subspace that keep data from different classes separated
+* fisher's linear discriminant
+
+Beyond linear projections
+
+* use a linear projection via the eigen system
+  * pca : maximize variance
+  * lda maximize discrimination between classes
+* more complex forms of U can be used
+  * NMF : non negative matrix factorization
+  * ICA : independent component analysis
+* non linear transformations are also possible
+  * use of kernels
+  * artificial neural network
 

@@ -251,4 +251,93 @@ detection of connections events
 
 ### User Experience and Virtual Reality
 
+#### Communication is a copperative activity
+
+* participant intentionaly, and attentionaly, share information and perform helping actions
+* Grounding : process to share common ground
+  * important part of conversation is dedicated to grounding
+  * referring : implicit or explicit
+  * eliciting : vous avez cours ce matin ? avec qui ?
+* commitments towards joint goals
+  * reengage participant
+* mutual awareness
+  * diadic interaction : agent & utilisateur
+  * group interaction
+
+#### Detection of connection events
+
+* Directed gaze
+  * design an object
+* mutual facial gaze
+* adjacency pair
+  * two utterances by two speakers with minimal overlap or gap
+* backchannel
+  * feedback
+
+#### social presence in virtual reality
+
+* psychological state
+  * artificial actors are sense as social actor
+
+Biocca 1997 :
+> a mental simulation of other intelligence
+
+* the sense of togetherness
+
+#### social presence and user engagement
+
+* hard to mesure because
+  * dynamic
+
+* prada and paiva, 2009
+* objectives
+  * natural interactinos
+  * autonomous behavior
+  * dynamical group structure
+* expected properties
+  * communicative and relational
+  * cooperative
+  * trusty
+
+* the uncanny valley paradigm (masahiro mori, 1970)
+  * limited calculus capacity
+  * find the right balance of realism and functionality
+
+#### Visual apperance and beyond
+
+* Realism is not all
+  * user engagement with task-related interface characters
+* ressemblance of agent and user have an impact
+  * no clear response
+* proteus effect
+* social psychology
+  * identity cues with self-embodiment
+
+#### Social presence and cooperation
+
+* cooperation between a user and a robot
+* being the recipient of caregiving acts leads users to form more positive perceptions of the robot
+* Wizard of Oz
+* higher the level of perceived benefit of the robot
+* greater the feeling of social presence, the more positive the user perceptions of the robot
+
 ### Conclusion
+
+* Virtual reality
+  * full immersing setup
+  * interaction devies for natural interaction
+  * cognitive metaphors (eg. locomotion)
+  * expressive virtual humans
+    * real-time face
+* artificial intelligence
+  * machine learning
+  * adaptive behavior
+  * cog. arch / virtual humans
+  * collaborative behaviors
+* Psychology
+  * cognitive
+    * embodied cognition, decision, making, emotion
+  * social
+    * collaboration, verbal communication, affects
+    * cannot be implemented in a program
+  * linguistic

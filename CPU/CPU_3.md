@@ -36,6 +36,9 @@ pbm :
 
 Comment donner du sens aux données
 
+Utilisation de sparql pour faire des requêtes SQL en gros
+
+
 ## documents virtuels
 
 ## métadonnées
