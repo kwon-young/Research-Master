@@ -266,6 +266,26 @@ Example of multiple layer of tissue moving in opposite directions.
 
 ### Molecule consumption and production
 
+Virtual cell can
+
+* detect
+* consume
+* produce
+* molecule of the env
+
+Use of a simplified artificial chemistry = {S, R, A}
+
+* S : set of molecules
+* R: set of rules
+* A : chemistry dynamics : how are rules applied to molecules
+
+Diffusion and reaction are diff equa. Use of Euler method for discretisation.
+Isotropic diffusion.
+Degradation rate.
+diffusion speed.
+stoichiometric coefficients
+Reaction rate : $R = k(T)[A][B]$, k(T) reaction rate constant, depends on the temperature.
+Only first and second order reactions.
 
 
 
