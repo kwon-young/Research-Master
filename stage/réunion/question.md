@@ -21,3 +21,17 @@ What is a biased dataset ?
 Graph grammar rules ?
 
 What about USA part of the internship ?
+
+# segmentation et reconnaissance
+
+comment est fait la segmentation précisément ?
+
+est-ce que le classifieur de l'article dmos[1] est toujours utilisé ?
+
+Présentation de l'article de reconnaissance de l'arabe
+
+MD LSTM RNN
+
+Présentation de l'article CRNN
+
+Comment intégrer un RNN dans DMOS ?

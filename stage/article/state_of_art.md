@@ -1,0 +1,193 @@
+# State of Art on Optical Music Recognition
+
+Classical research field of Document Image Analysis and Recognition.
+
+OMR started in 1966 with Pruslin [46].
+
+## Problem Definition
+
+Graphical structure :
+
+* text information
+* graphical information
+    * 2D structural rules
+
+Hybride problem between OCR (contains symbols) and graphics recognition (contains graphics).
+
+Multiple elements in a score : staff, Attributive symbols at the beginnings, Bar lines, Notes and rests, slurs, Dynamic and tempo markings, Lyrics ...
+
+The elements are written following a syntax and a semantic. Context information is important.
+
+Main problem of OMR : high density of symbols.
+Main challenge : correctly parse symbols in a score.
+
+## Different stage of OMR
+
+### Preprocessing
+
+use of binarization, skew correction, noise removal.
+not on the scope of the study.
+
+### Staff removal
+
+define vertical coordinates of pitches and horizontal direction of the time.
+give size normalization.
+Main challenge of OMR because it links all the symbol together.
+multiple methods for staff removal :
+
+* Projections and Run Lengths
+* Candidates Assemblage and Contour Tracking
+* Graph Path Search
+* No staff removal
+
++---------------------------+------------------+---------------+-------------+-------+
+| Method                    | Works            | Overlapping   | Staff-lines | Speed |
+|                           |                  | symbols-staff | grouping    |       |
++===========================+==================+===============+=============+=======+
+| Projections, histograms   | [9, 34, 46],     | -             | ++          | ++    |
+| and run lengths           | [26, 44, 50],    |               |             |       |
+|                           | [11, 16, 33, 56] |               |             |       |
++---------------------------+------------------+---------------+-------------+-------+
+| Candidates assemblage and | [20, 38, 53],    | +             | +           | +     |
+| contour tracking          | [12, 43, 45]     |               |             |       |
++---------------------------+------------------+---------------+-------------+-------+
+| Graph path search         | [8, 14, 35]      | ++            | +           | -     |
++---------------------------+------------------+---------------+-------------+-------+
+
+: Analysis and Recognition of Music Scores
+
+### Music Symbol Extraction and Classification
+
+This is a symbol classification problem.
+But some symbol can combine to form other symbol.
+Classifier must be able to cope with this.
+
+#### Template matching
+
+Selection of good symbols comparing a region of the image with templates of music symbols.
+Relative positions and mutual connections are used to correctly label a symbol.
+Use of coherence checks for touching symbols.
+
+cons :
+
+* slow to compute
+* low robustness
+
+#### Simple Operations
+
+Characterize a music symbol with a set of simple operations :
+
+* analysis of bounding boxes
+* projections
+* morphological operations
+
+Compare a region of the image with these property to deduce the class of a symbol.
+
+#### Joining Graphical Primitives
+
+Extraction of graphical primitives.
+Combination of these primitives to make more complex music symbols.
+Can use context or not.
+Use of music notation by a set of rules.
+Primitives are extracted as line, circular blobs, circles, arcs ...
+Can use a classifiers like neural networks to recognize symbol with context constraints.
+
+#### Statistical Approaches
+
+classification methods for musical primitives :
+
+* Neural networks
+* SVM : works best
+* k-NN : second best
+* HMM
+
+#### Symbol Descriptors
+
+Use of symbol descriptors for recognition of music symbols.
+
+decision methods : 
+
+* centroids
+* Zernike moments
+* decision trees
+    * example : use of 278 basic features with PCA
+
+#### Structural and Syntactical Approaches
+
+set of method to use context to solve ambiguities.
+
+* grammars
+* graphs
+* fuzzy modeling
+* ...
+
+integrations of symbol recognition with validation.
+
++------------------------------+-------------------+------------+------------+-------+
+| Method                       | Works             | Appearance | Noise      | Speed |
+|                              |                   | robustness | robustness |       |
++==============================+===================+============+============+=======+
+| Template matching            | [39, 46, 57]      | --         | --         | -     |
++------------------------------+-------------------+------------+------------+-------+
+| Bouding box, projections     | [3, 9, 45],       | --         | --         | ++    |
+| morphological operations     | [8, 34, 42]       |            |            |       |
++------------------------------+-------------------+------------+------------+-------+
+| Joining graphical primitives | [38, 41, 53],     | +          | +          | +     |
+|                              | [20, 33]          |            |            |       |
++------------------------------+-------------------+------------+------------+-------+
+| Statistical                  | [47, 51]          | +          | ++         | -     |
++------------------------------+-------------------+------------+------------+-------+
+| Symbol descriptors           | [17, 31] [18, 21] | ++         | ++         | +     |
++------------------------------+-------------------+------------+------------+-------+
+| Syntactic and structural     | [50, 54, 55]      | ++         | ++         | -     |
++------------------------------+-------------------+------------+------------+-------+
+
+### Syntactical Analysis and Validation
+
+#### Grammars
+
+grammars guide recognition.
+grammars can correct recognition errors.
+
+often only use at high-level for validation.
+can be used to control the entire recognition process.
+
+#### Rules or Graph Grammars
+
+can use *a priori* knowledge on music notations to predict symbol position.
+also use rules to validate recognition at high-level.
+
+top-down architecture :
+
+* pixel
+* primitives
+* music symbols
+* meaning
+* context information
+
+processing module
+
+* primitive extraction
+    * can recognize stems, beams, noteheads
+* symbol synthesis
+* symbol recognition
+* semantic analysis
+
+all have recognition and verification units.
+Retro propagation of symbols to lower levels if higher levels rejects them.
+One measure at a time.
+
+Can also use a Graph grammars rules to specify syntactic and semantic rules.
+
+## Printed Music Scores
+
+OMR on printed scores is practically a closed subjects.
+works very well.
+
+## Old Hand Written Music Scores
+
+removing staff lines.
+
+
+
+
