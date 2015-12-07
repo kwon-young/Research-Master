@@ -1,116 +1,47 @@
-faire une signature d'un langage objet
+---
+title: Late Binding study for F#
+author: Kwon-Young Choi
+footer: k1choi@enib.fr
+geometry: margin=1in
+...
 
-code
-1 demi page de tableau
-1 demi page d'interprétation, analyse
+# Introduction
 
-# Late-binding semantics of the Matlab language
+The purpose of this document is to study the behavior of an object oriented language, `F#` in our case, regarding the concept of late binding.
+We will talk about notion like covariance and contravariance in relation to redefinition and overload.
+We will find that each language implement the object paradigm differently.
+To identify what language signature F# has implemented, we will realize a simple experiment implementing a covariant and contravariant redefinition and we will print the *signature of the language F#*.
 
-## Code
+# Presentation of the experiment
 
-```matlab
-% File Up.m
-% definition of class Up
-classdef Up
-    methods
-        function cv(obj, top)
-            top;
-            disp('Up');
-        end
-        function ctv(obj, bottom)
-            bottom;
-            disp('Up');
-        end
-    end
-end
+We will define 5 classes :
 
-% File Down.m
-% definition of class Down
-classdef Down < Up
-    methods
-        function cv(obj, middle)
-            middle;
-            disp('Down');
-        end
-        function ctv(obj, middle)
-            middle;
-            disp('Down');
-        end
-    end
-end
+* Top
+* Middle extends Top
+* Bottom extends Middle
+* Up
+* Down extends Up
 
-% File Top.m
-% definition of class Top
-classdef Top
-end
+Up and Down are classes with following methods :
 
-% File Middle.m
-% definition of class Middle
-classdef Middle < Top
-end
+* For the class Up :
+    * `cv(Top t) print "Up"`
+    * `ctv(Bottom b) print "Up"`
+* For the class Down :
+    * `cv(Middle m) print "Down"` : for covariant redefinition
+    * `ctv(Middle m) print "Down"` : for contravariant redefinition
 
-% File Bottom.m
-% definition of class Bottom
-classdef Bottom < Middle
-end
+## Covariant redefinition
 
-% Test code
-u = Up();
-d = Down();
-ud = Down(); %useless
+A redefinition like `cv(Middle m)` is called covariant because Middle is a subtype of Top.
+Because there were another definition of the method cv with the type Top, `cv(Middle m)` is therefore a covariant redefinition of `cv(Top t)`.
 
-% test for the Up class
-u.cv(Top());
-u.cv(Middle());
-u.cv(Down());
-u.ctv(Top());
-u.ctv(Middle());
-u.ctv(Down());
+## Contravariant redefinition
 
-% test for the Down class
-d.cv(Top());
-d.cv(Middle());
-d.cv(Down());
-d.ctv(Top());
-d.ctv(Middle());
-d.ctv(Down());
+A redefinition like `ctv(Middle m)` is called contravariant because Bottom is a subtype of Middle.
+Because there were another definition of the method ctv with the type Bottom, `ctv(Middle m)` is therefore a contravariant redefinition of `ctv(Bottom m)`.
 
-% same as the Down class
-ud.cv(Top());
-ud.cv(Middle());
-ud.cv(Down());
-ud.ctv(Top());
-ud.ctv(Middle());
-ud.ctv(Down());
-```
-
-Result :
-
-|             | u   | d    | ud   |
-|-------------|-----|------|------|
-| cv(Top)     | Up  | Down | Down |
-| ---         | --- | ---  | ---  |
-| cv(Middle)  | Up  | Down | Down |
-| ---         | --- | ---  | ---  |
-| cv(Bottom)  | Up  | Down | Down |
-| ---         | --- | ---  | ---  |
-| ctv(Top)    | Up  | Down | Down |
-| ---         | --- | ---  | ---  |
-| ctv(Middle) | Up  | Down | Down |
-| ---         | --- | ---  | ---  |
-| ctv(Bottom) | Up  | Down | Down |
-| ---         | --- | ---  | ---  |
-
-# late binding for F#
-
-## Code
-
-```{.cpp}
-int main(void)
-{
-  return 0;
-}
-```
+## The code
 
 ```fsharp
 type Top () =
@@ -143,6 +74,7 @@ type Down ()=
  
 let u = Up()
 let d = Down()
+// :> is the static cast operator
 let ud : Up = Down() :> Up
 
 printfn("testing u")
@@ -189,18 +121,78 @@ printfn("error for ud.ctv(Middle())")
 ud.ctv(Bottom())
 ```
 
-|               | u     | d      | ud     |
-| ------------- | ----- | ------ | ------ |
-| cv(Top)       | Up    | Down   | Down   |
-| ---           | ---   | ---    | ---    |
-| cv(Middle)    | Up    | Down   | Down   |
-| ---           | ---   | ---    | ---    |
-| cv(Bottom)    | Up    | Down   | Down   |
-| ---           | ---   | ---    | ---    |
-| ctv(Top)      | Up    | Down   | Down   |
-| ---           | ---   | ---    | ---    |
-| ctv(Middle)   | Up    | Down   | Down   |
-| ---           | ---   | ---    | ---    |
-| ctv(Bottom)   | Up    | Down   | Down   |
-| ---           | ---   | ---    | ---    |
+## Output
 
+```
+testing u
+u.cv(Top()) : 
+Up
+u.cv(Middle()) : 
+Up
+u.cv(Bottom()) : 
+Up
+u.ctv(Top()) : 
+error for u.ctv(Top())
+u.ctv(Middle()) : 
+error for u.ctv(Middle())
+u.ctv(Bottom()) : 
+Up
+testing d
+d.cv(Top()) : 
+Up
+d.cv(Middle()) : 
+Down
+d.cv(Bottom()) : 
+Down
+d.ctv(Top()) : 
+error for d.ctv(Top())
+d.ctv(Middle()) : 
+Down
+d.ctv(Bottom()) : 
+Up
+testing ud
+ud.cv(Top()) : 
+Up
+ud.cv(Middle()) : 
+Up
+ud.cv(Bottom()) : 
+Up
+ud.ctv(Top()) : 
+error for ud.ctv(Top())
+ud.ctv(Middle()) : 
+error for ud.ctv(Middle())
+ud.ctv(Bottom()) : 
+Up
+```
+
+## Result
+
+<!--+-------------+-------+-------+-------+-->
+<!--|             | u     | d     | ud    |-->
+<!--+=============+=======+=======+=======+-->
+<!--| cv(Top)     | Up    | Up    | Up    |-->
+<!--+-------------+-------+-------+-------+-->
+<!--| cv(Middle)  | Up    | Down  | Up    |-->
+<!--+-------------+-------+-------+-------+-->
+<!--| cv(Bottom)  | Up    | Down  | Up    |-->
+<!--+-------------+-------+-------+-------+-->
+<!--| ctv(Top)    | error | error | error |-->
+<!--+-------------+-------+-------+-------+-->
+<!--| ctv(Middle) | error | Down  | error |-->
+<!--+-------------+-------+-------+-------+-->
+<!--| ctv(Bottom) | Up    | Up    | Up    |-->
+<!--+-------------+-------+-------+-------+-->
+
+![Table of results of late binding in F#](result.jpg "Table of results of late binding in F#")
+
+We see that for the case 2,1 `d.cv(Top)` and case 2,6 `d.ctv(Bottom)`, the language prefers to choose a method with a better prototype than to choose the most specialized definition.
+
+
+The column 3 shows us that covariant and contravariant are ignored by the language, therefore indicating us that the semantics of the language F# has mostly a *pragmatic semantics* because the language only consider the apparent type of an object.
+
+These results inform us that F# have the same language signature as Java > 1.4. 
+
+# Conclusion
+
+We understand that semantic variation points of popular modeling language like UML are expressed with a lot of variability in the implementation of the object paradigm in computer languages.
+In the particular case of F#, we see that this language has a pragmatic semantics like Java. This language doesn't accept covariant or contravariant definition.
