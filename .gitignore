@@ -4,4 +4,7 @@
 !readme.md
 !.gitkeep
 !*.md
+!*.tex
+!*.latex
+!*.bib
 !*/
