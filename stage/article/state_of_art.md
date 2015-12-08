@@ -3,8 +3,17 @@
 Classical research field of Document Image Analysis and Recognition.
 
 OMR started in 1966 with Pruslin [46].
+big expansion in 80s.
+
+High demand on OMR because composer still use "pen and paper"
 
 ## Problem Definition
+
+Optical Music Recognition
+
+:   `Recognition, representation and storage of musical scores in a machine-readable format. [@rebelo_optical_2012]`
+
+Manual OMR is time consuming.
 
 Graphical structure :
 
@@ -16,16 +25,22 @@ Hybride problem between OCR (contains symbols) and graphics recognition (contain
 
 Multiple elements in a score : staff, Attributive symbols at the beginnings, Bar lines, Notes and rests, slurs, Dynamic and tempo markings, Lyrics ...
 
+Music notation
+
+:   visual manifestation of interrelated properties of musical sound such as pitch, dynamics, time, and timbre. [@rebelo_optical_2012].
+
 The elements are written following a syntax and a semantic. Context information is important.
 
-Main problem of OMR : high density of symbols.
+Main problem of OMR : high density, combination possibilities and variation of symbols.
 Main challenge : correctly parse symbols in a score.
 
 ## Different stage of OMR
 
+interesting figure in [@rebelo_optical_2012] Fig 1.
+
 ### Preprocessing
 
-use of binarization, skew correction, noise removal.
+use of binarization, skew correction, noise removal, blurring, morphological operation.
 not on the scope of the study.
 
 ### Staff removal
@@ -38,6 +53,7 @@ multiple methods for staff removal :
 * Projections and Run Lengths
 * Candidates Assemblage and Contour Tracking
 * Graph Path Search
+* Hough transform
 * No staff removal
 
 +---------------------------+------------------+---------------+-------------+-------+
@@ -61,6 +77,8 @@ multiple methods for staff removal :
 This is a symbol classification problem.
 But some symbol can combine to form other symbol.
 Classifier must be able to cope with this.
+
+Most common method : hierachical decomposition of the music image.
 
 #### Template matching
 
@@ -105,7 +123,7 @@ classification methods for musical primitives :
 
 Use of symbol descriptors for recognition of music symbols.
 
-decision methods : 
+decision methods :
 
 * centroids
 * Zernike moments
@@ -117,6 +135,7 @@ decision methods :
 set of method to use context to solve ambiguities.
 
 * grammars
+    * dmos system
 * graphs
 * fuzzy modeling
 * ...
@@ -186,8 +205,103 @@ works very well.
 
 ## Old Hand Written Music Scores
 
-removing staff lines.
+Bainbridge, Carter et al.
+removing staff lines with LAG.
+classification with bounding-box size.
+do not support overlapping or superimposed symbols.
 
+Pinto et al.
+cope with specific notation of ancient documents.
+divide music sheet into staff line, bars and musical symbols.
+removing staff line with horizontal projection.
+bar line location with vertical projection.
+recognition with a graph structure of classifiers.
+reconstruction stage.
+97% accuracy.
 
+Fornés et al.
+recognition of graphical primitives.
+remove staff line with contour tracking.
+dectect vertical line, bar lines, filled head notes using median filters.
+suggestion of the use of a grammar.
 
+Pugin.
+use of HMM.
+no staff removal, no segmentation.
+avoid segmentation problem.
+use techniques of speech recognition for music score : sliding windows, feature extractions.
+number of states of HMM match width of windows.
+Baum-Welch algorithm.
+training phase, each staff used once.
+good recognition rate.
+
+## Modern Handwritten Music Scores
+
+Ng.
+staff removal.
+segmentation and segregation to low-level graphical primitives.
+classification with k-NN classifier.
+use of syntactical rules for reconstructions.
+intermediate stage with heuristic, musical syntax and conventions.
+no recognition rate.
+
+Rebelo et al.
+test of performance of
+
+* NN
+* SVM
+* k-NN
+* HMM
+
+SVM and k-NN give better results.
+
+## OnLine Music Scores
+
+rising sector.
+
+George.
+use of NN : MLP.
+80% of recog.
+
+Macé et al.
+online system.
+pen-based interaction.
+formalism with context-free grammar : time, space and composition structure.
+handwritten stoke parser for segmentation.
+recog with heuristics of NN.
+framework accept or reject hypothesis from recognizers.
+no recog rate.
+
+Miyao and Maruyama.
+online symbol recognition system.
+recog with time-series data and hand-drawn image features.
+Use of SVM for recognition.
+multiple possibility of stroke for a symbol.
+98% recog rate.
+
+# Conclusion
+
+* music notation
+* history of OMR
+* main approach in each stage of OMR
+    * preprocessing
+    * staff removal
+    * symbol recognition validation
+* recognition of old music scores
+* handwritten music scores
+    * off-line
+    * on-line
+* mature state on printed score
+* open problems in old score and handwritten of music scores and complex music scores.
+    * hard to recognize complex symbols.
+* system not applicable for productive use.
+* promising approach
+    * use of context information
+    * structure of music score
+    * music notation
+* grammar is a good choice
+* learning based approach
+    * HMM
+    * NN
+    * cope with variability of handwritten music score
 
