@@ -74,11 +74,13 @@ multiple methods for staff removal :
 
 ### Music Symbol Extraction and Classification
 
+Main problems are segmentation and recognition of overlapping and broken symbols.
+
 This is a symbol classification problem.
 But some symbol can combine to form other symbol.
 Classifier must be able to cope with this.
 
-Most common method : hierachical decomposition of the music image.
+Most common method : hierarchical decomposition of the music image.
 
 #### Template matching
 
@@ -163,6 +165,13 @@ integrations of symbol recognition with validation.
 
 ### Syntactical Analysis and Validation
 
+Interpret spatial relation between different primitives or symbol recognize.
+* Reconstruct musical notation for primitives.
+* Complex two dimensional structure.
+* Positional information is very important.
+* Context is very important
+
+
 #### Grammars
 
 grammars guide recognition.
@@ -170,6 +179,11 @@ grammars can correct recognition errors.
 
 often only use at high-level for validation.
 can be used to control the entire recognition process.
+
+Techniques used:
+
+* Rule based grammar
+* Graph based grammar
 
 #### Rules or Graph Grammars
 
