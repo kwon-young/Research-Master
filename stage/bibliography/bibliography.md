@@ -4,35 +4,10 @@ author: Kwon-young Choi
 date: December 8, 2015
 tags: OMR, OCR, neural net, lstm, cnn, bibliography
 bibliography: stage.bib
+geometry: margin=1in
 ---
 
 # Introduction
-
-* state of art of OMR
-    * hybrid field 
-        * structured document recognition
-        * image recognition
-    * multiple phase
-        * preprocessing
-        * staff removal
-        * symbol segmentation
-        * symbol recognition
-        * semantic reconstruction
-* dmos system
-    * general purpose document recognition
-    * grammar
-    * parser
-    * classifier
-        * reject notion
-* music symbol segmentation and recognition
-    * merging the two phase
-        * pro
-        * cons
-    * different techniques used
-        * markov chains
-    * use of deep learning techniques
-        * in OCR with lstm networks
-        * in object recognition with convolutional
 
 # Internship subject definition
 
@@ -40,7 +15,9 @@ bibliography: stage.bib
     * pbm : improve segmentation and recognition of overlapping and broken symbols
     * way to improve dmos:
         * use new techniques of deep learning for segmenting and recognizing music symbols
-    * objectif : working on very large orchestral score and handwritten score
+    * objectif :
+        * application on very large orchestral score and handwritten score
+        * possible extension in electronic board schematics recognition
 
 # Optical Music Recognition (OMR)
 
@@ -66,7 +43,7 @@ Structure of a score:
         * bar lines
         * notes and rests
         * slurs
-        * Dynamic and tempo marking 
+        * Dynamic and tempo marking
 * textual information like lyrics
 
 Main problem in OMR:
@@ -131,6 +108,7 @@ Main techniques reviewed in [@rebelo_optical_2012 and @fornes_analysis_2014].
 
 Variability in music symbol is source of complexity.
 Digitalization and paper degradation adds noise and difficulty for this operations.
+Develop problems.
 
 Usual way of segmenting a music score:
 
@@ -145,7 +123,7 @@ Usual way of segmenting a music score:
     * slow to compute
     * low robustness
 * simple operation
-    * compute simple feature of candidates as bounding box, projections, morphological operations
+    * compute simple feature of music symbols as bounding box, projections, morphological operations
     * compare with same features extracted from an region of interest of the image to recognize a symbol.
 * symbol descriptors
     * use symbol descriptors instead of the raw pixel information
@@ -160,7 +138,7 @@ Usual way of segmenting a music score:
 
 ### Music score reconstruction
 
-Interpret spatial relation between different primitives or symbol recognize.
+Interpret spatial relationship between different primitives or symbol recognized.
 
 * Reconstruct musical notation for primitives.
 * Complex two dimensional structure.
@@ -169,7 +147,7 @@ Interpret spatial relation between different primitives or symbol recognize.
 
 Techniques used:
 
-* use of a fuzzy modeling
+* use of fuzzy model
 * use of grammar
     * grammar guide recognition
     * grammars can correct recognition errors
@@ -202,7 +180,9 @@ Main purpose is to separate the semantic and graphic knowledge of the program th
 
 Used initially on OMR for orchestral scores, then on various forms, especially on old military forms.
 
-# Symbol classification with prior segmentation
+# Symbol segmentation and classification
+
+## Symbol classification with prior segmentation
 
 There techniques are used after the step of segmentation.
 Comparative study in [@rebelo_optical_2009].
@@ -245,6 +225,7 @@ Implemented in [@pugin_optical_2006].
 * trained using Baum-Welch algorithm.
 * ~ 96% recognition rate
     * but recognition rate are highly dependent of features chose, sliding windows width ...
+    * Do not consider long-term dependency
 
 # Overview of latest techniques used in OCR and speech recognition
 
@@ -261,6 +242,8 @@ In the history of OCR:
     * use of context information by using recurrent neural network
 
 ## Using context information with recurrent neural network
+
+### Long Short-Term Memory Recurrent Neural Network
 
 In [@hochreiter_long_1997], presentation of a new recurrent neural network structure
 
@@ -280,32 +263,143 @@ Network Topology : 3 fully connected layer, input-hidden-output.
 Network pro: have long time memory
 These network could be used in OMR because they use context information.
 
+### Multi-Dimensional Recurrent Neural Network
+
+In [@graves_offline_2009] :
+
+present a network architecture that is a generalisation of Bi-directional Neural Network
+
+Bi-directional neural network is used for using past and future context for 1 dimensional data by adding recurrent connection to the previous sample and the future sample.
+
+Multi-dimensional neural network generalized for N dimension.
+For an image, it adds recurrent connection to all spatial direction.
+
+Create flexible internal representation of surrounding context.
+Robust to local distortion.
+
+2D networks has 4 layers that scan from each corner of the image.
+Single output layers, that have context from each directions.
+
+MDRNN is trained with backpropagation alg generalized to n dimensions.
+
+### Connectionist Temporal Classification
+
+In [@graves_offline_2009] :
+
+output layer.
+
+designed for sequence labelling.
+
+trains the network to estimate the conditional probabilities of the possible labellings.
+
+CTC output layers contains N+1 units for alphabet of size N.
+output normalized with softmax function.
+0 to N units estimates the prob of obs of corresponding label
+N+1 unit estimates the blank
+
+Operator B used to removes repetition.
+
+Objective function : negative log prob
+
+Once trained, take the highest conditional probabilities.
+
+Pro :
+
+network can be trained without presegmenting the ground truth data, or postprocessing the output of the network.
+Resolve the segmentation problems.
+
+Problems :
+
+* designed for 1D sequence labelling : in OMR, we have multidimensional output :
+    * the symbol recognized
+    * x and y positions of the symbol
+
+### Network Hierarchy
+
+In [@graves_offline_2009] :
+
+Hierarchical approach for feature extraction.
+
+Allow complex visual properties to be built.
+
+* use subsampling : decrease resolution
+* more feature at higher levels
+
+Hierarchical structure : interleaves MDLSTM layers with feedforward network.
+Activation of MDLSTM layers are gathered into blocks, therefore allowing subsampling.
+
+purpose of blocks
+
+* local contextual information
+* reduce the area of the activation arrays : reduce 2D image to 1D sequences
+    * subsampling
+
+Commonly, three layers of MDLSTM/Feedforward gives the best results for OCR.
+*Inverted pyramid structure* : small layer at the bottom and large at the top for efficient network.
+
+Problems :
+
+* This structure reduce the 2D image to a 1D sequence. but OMR output is not a 1D sequence
+
+### A2IA recognition system proposition
+
+Presented in [@moysset_a2ia_2014].
+
+The Maurdor challenge is a computer vision and document recognition contest with extremely hard data to be recognized.
+
+A2IA submit a complete system for document processing chain :
+
+* document layout analysis
+* write type identification
+* language identification
+* text recognition
+* logical organization
+* information extraction
+
+They used the recognition previously explained, with little change :
+
+* They changed sub-sampling filter
+* Tuned hidden layer sizes for the dataset
+* Used dropout during the training phase
+
+For the training phase :
+They used an automatic system for the alignment of annotations and line images.
+They extracted images of a line of text of a paragraph.
+The algorithm matched the image with a part of the ground truth data.
+
 In [@messina_segmentation-free], they applied this kind of network architecture on recognizing line of handwritten Chinese text without explicit segmentation.
 
-* use of multi-dimensional LSTM-RNN
-    * multidimensional because they use a horizontal and vertical sliding windows.
-* use Connectionist Temporal classification introduced by [@graves_connectionist_2006]
-    * can train RNN without pre-segmenting training data and post-processing the output of the network
-    * allow to automatically segment the output of MDLSTM RNN
+Deals with a large set of symbols.
+Use scalable bounding boxes.
 
-These kind of network could be used on OMR directly on staff level.
+### Summary
 
-* pro:
-    * use of context information
-    * automated segmentation
-* cons:
-    * can only segment one dimensional data
-        * in OMR, we need the exact two dimensional position (x, y) of a symbol
-    * they have to be trained on line of data like graphically annotated staff of music scores
-        * currently, there is no database with graphically annotated music scores
+* LSTM
+    * pro : have long term depency
+* MDLSTM
+    * pro : robust to loncal distorsion
+* CTC
+    * pro : no need of segmentation
+    * have only a 1D output
+* Hierarchical structure
+    * allow complex visual properties to be built
+    * Reduce to 1D sequence
 
-## Localizing object in image with convolutional neural network
+MD LSTM RNN with CTC and an Hierarchical structure could solve segmentation ambiguities for broken symbols or overlapped symbols.
+Major problems is it works only on 1D sequence output.
+
+Also, it is difficult to say if this network is robust to vertical shifting.
+Notes can be shift in any vertical position of the image, for changing its pitch.
+
+
+
+# Localizing object in image with convolutional neural network
 
 OMR is a hybrid domain between structured document recognition and image recognition.
 
 In [@erhan_scalable_2014], use of Deep convolutional neural network for scalable object detection and localization.
 
-* deep network : 
+* deep network :
     * use multiple convolutional network
     * multiple max-pooling layer
     * soft-max layer as output
@@ -333,5 +427,7 @@ In [@erhan_scalable_2014], use of Deep convolutional neural network for scalable
     * using CTC for automated segmentation
 * avenue for research from pattern recognition
     * using CNN for generating two dimensional information like bounding boxes
+* possibility to generate some musical data like sequence of notes and chords
+* possible extension to electronic board schematics recognition
 
 # References
