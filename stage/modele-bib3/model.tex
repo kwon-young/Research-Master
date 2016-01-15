@@ -1,0 +1,341 @@
+\documentclass[11pt]{sdm}
+\usepackage{graphicx}
+
+%numeroter les pages
+\pagestyle{plain}
+
+\title{Segmentation and recognition of symbols for printed and handwritten music scores}
+\author{Kwon-Young \textsc{Choi}}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\supervisorOne{Bertrand \textsc{Coüasnon}}
+\supervisorTwo{Yann \textsc{Ricquebourg}}
+\supervisorTwo{Richard \textsc{Zanibbi}}
+\team{Intuidoc}
+%One of:
+% ens-Rennes  esir    insa-rennes logoENIB  rennes1  UBO
+% enssat header logo_ENIB   logoUbs   tel-br supelec
+
+\school{logo_ENIB}
+
+
+% the domain should be one or two of:
+% Technology for Human Learning
+% Artificial Intelligence
+% Computer Arithmetic
+% Hardware Architecture
+% Automatic Control Engineering
+% Bioinformatics
+% Biotechnology
+% Computational Complexity
+% Computational Engineering, Finance, and Science
+% Computational Geometry
+% Computation and Language
+% Cryptography and Security
+% Computer Vision and Pattern Recognition
+% Computers and Society
+% Databases
+% Distributed, Parallel, and Cluster Computing
+% Digital Libraries
+% Discrete Mathematics
+% Data Structures and Algorithms
+% Embedded Systems
+% Emerging Technologies
+% Formal Languages and Automata Theory
+% General Literature
+% Graphics
+% Computer Science and Game Theory
+% Human-Computer Interaction
+% Computer Aided Engineering
+% Medical Imaging
+% Information Retrieval
+% Information Theory
+% Ubiquitous Computing
+% Machine Learning
+% Logic in Computer Science
+% Multiagent Systems
+% Mobile Computing
+% Multimedia
+% Modeling and Simulation
+% Mathematical Software
+% Numerical Analysis
+% Neural and Evolutionary Computing
+% Networking and Internet Architecture
+% Operating Systems
+% Performance
+% Programming Languages
+% Robotics
+% Operations Research
+% Symbolic Computation
+% Sound
+% Software Engineering
+% Social and Information Networks
+% Systems and Control
+% Image Processing
+% Signal and Image Processing
+% Document and Text Processing
+% Web
+\domain{Domain:  Document and Text Processing, Computer Vision and Pattern Recognition}
+
+%write your abstract here
+\abstract{write your abstract here}
+
+
+
+\begin{document}
+\maketitle
+
+%*****************************************************************%
+
+\section{Introduction}
+
+The research team Intuidoc from the Irisa laboratory has developed a generic way of recognizing structured document by using the DMOS system.
+The goal of this internship is to improve this generic document recognition method on the specific use of Optical Music Recognition (OMR).
+The team has already formalized music notation grammar into rules understandable by the DMOS system.
+But there are still problems during the low-level image recognition task.
+Indeed, because of the density of information in a musical score and because of all preprocessing phases applied to the image, there are often cases of broken and overlapping musical symbols.
+Currently, the recognition system used in DMOS is having difficulties in recognizing such symbols.
+The specific purpose of this internship is to improve the recognition of broken and overlapping symbols.
+The hypothesis that will guide this bibliography is that by avoiding explicit segmentation during the recognition phase, we will be able to improve the recognition task.
+In a way, we are following the history of OCR and speech recognition where we have first used techniques with explicit segmentation, but now we have developed techniques that integrate segmentation in the recognition task.
+Making generic method is an important characteristics of the DMOS philosophy, so although we are working on the music score, the improvement proposed should work for other structured documents.
+
+We will first review the state of the art of OMR by first introducing how a music score is structured, then we will review the state of the art of OMR by presenting all steps classically used in OMR: preprocessing, staff removal, segmentation and recognition of music symbols, music notation reconstruction.
+In a second part we will review different techniques that may improve the segmentation and recognition of music symbols.
+Techniques that merge the segmentation and recognition task: Hidden Markov Model, Multi-Dimensional Long Short-Term Memory Recurrent Neural Network.
+Finally, we will present other techniques used in image recognition like Convolutional Neural Network and a model of Visual Attention.
+
+\section{State of the art of OMR}
+
+
+In this section we will first define what is optical music recognition and its main issues.
+Then we will describe all the steps commonly used for implementing an OMR system.
+Finally, we will also briefly introduce the DMOS system developed by the intuidoc team in the context of OMR.
+
+
+\subsection{Definition}
+
+
+Nowadays, digitalizing scores is a common practice to save and share music.
+But the format of these documents cannot be directly interpreted by a computer.
+That is why we have developed Optical Music Recognition systems for converting an image of a score to a format that are understandable by a computer.
+This computer vision task could be therefore classified as a hybrid domain between Optical Character Recognition and image recognition.
+OMR is principally used to save time because manually transcribing a score in machine readable format is very time consuming.
+Many music composers still find awkward to directly write music with a music composer software and prefer to write their music on paper.
+The use of OMR in these situations could integrate into the working flow of music composer their habit to write music on paper and automatically transcribe them in a computer readable format.
+
+
+A score is a structured document used to formalize music.
+Its organization is hierarchical:
+\begin{itemize}
+  \item Different staffs are used for different instruments or voices.
+  \item Each staffs can contain one or more bar lines.
+  \item A bar line lines contain musical symbols.
+  \item A music symbols like a note is constructed by the association of graphical primitives like a dot, stem and flags \ldots
+\end{itemize}
+There are multiple symbols in musical notation: clefs, notes and rests, breaks, accidentals and key signatures, time signatures, dynamics \ldots
+
+
+OMR system are faced with multiple problems such as:
+\begin{itemize}
+  \item The high density of symbols
+  \item High connectivity between symbols
+  \item High variation of symbols
+  \item Overlapping and broken symbols
+\end{itemize}
+A score has a unidirectional direction of reading that correspond to the time flow, but multiple things can happen simultaneously.
+As a consequence, the output of an OMR system is not just a one dimensional sequence of symbols.
+All graphical symbols must be localized horizontally and vertically in order to deduce their relations between each others.
+% compléter par des illustrations
+
+
+Authors like in \cite{rebelo_optical_2012} or \cite{fornes_analysis_2014} generally describe an OMR system by identifying multiple steps:
+\begin{itemize}
+  \item preprocessing
+  \item staff removal
+  \item symbol segmentation
+  \item symbol recognition
+  \item music score reconstruction
+\end{itemize}
+We will first review all these different steps, but we will particularly focus on symbol segmentation and recognition because it is the central theme of this internship.
+We will also present more in details the DMOS system at the end of this part because of its role in this internship.
+
+
+\subsection{Different step of OMR}
+
+
+\subsubsection{Preprocessing}
+
+
+The preprocessing phase of OMR consist of making some operation on the raw image to ease the latter steps of OMR.
+Before anything, the image has to be converted into a binary image.
+This operation is a classical operation of computer vision tasks.
+Then, optional operation can be applied to enhance the quality of the score.
+\begin{itemize}
+  \item skew correction for staff line: used for simplifying the staff removal step.
+  \item noise removal for bad scanning and digitalization.
+  \item some other morphological operation \ldots
+\end{itemize}
+
+\subsubsection{Staff removal}
+
+One characteristics of a music score is that most of the symbols are connected by the five bar lines that constitute a staff.
+These bar lines are an obstacle for almost every classical techniques of segmentation and recognition used in computer vision.
+This is why, most OMR systems first removes these lines.
+
+A fast way to do this tasks is to do horizontal projection of a music staff.
+The resulting vertical position of an intensity peak is an indicator of the position of a bar line.
+It is worth noting that these kind of projection or run lengths techniques do not deal well with overlapping symbol, and often result on breaking symbols.
+Candidate assemblage and contour tracking are an other way to remove a staff that are relatively fast to compute and can sometimes deal with overlapping symbols.
+Graph path search techniques can produce really good results but are slow to compute.
+Finally, detection of lines in an image can be done by using complex filters like a hough transform or a Kallman filter like one used in the DMOS system \cite{couasnon_dmos_2001}.
+
+
+
+\subsubsection{Music symbol segmentation and recognition}
+
+
+Music symbol segmentation and recognition are the core part of an OMR system.
+It is also the more challenging part because of the high number and high variability of music symbols.
+This complexity is often aggravated because of bad digitalization and paper degradation for ancient score.
+
+Techniques used by OMR systems during this step are very diverse and many solutions have been proposed.
+However, most of OMR systems first does a segmentation step and then apply recognition techniques to extract the correct symbol.
+A simple way of segmenting a score is by first extracting graphical primitives like a line, blobs, circles \ldots and then joins these graphical primitives for the recognition stages.
+Symbols can be extracted and recognize by using template matching techniques.
+But these kind of techniques have many drawbacks as they are slow to compute and have a really low robustness when recognizing a symbol.
+One way to recognize a symbol from a bounding box candidate is by computing simple operation that will result in simple features of the region of interest of the image and compare the results with those same features computed from symbols models.
+This same philosophy can be used with different techniques by using symbol descriptors like centroids, Zernike moments, decision trees.
+
+
+The use of classifiers is yet another method to recognize a music symbol and four different classifiers are compared in \cite{rebelo_optical_2009}.
+Hidden Markov models have been extensively used for optical character recognition and speech recognition.
+In \cite{pugin_optical_2006}, they have attempted to apply a hidden Markov model for recognizing very simple and old scores.
+Their proposition has the interesting property to merge the segmentation task and the recognition task.
+The use of simple neural network like a multi-layered perceptron also have been reviewed for recognizing music symbols.
+The classic backward-propagation algorithm has been used for the training algorithm.
+The results were disappointing as they were outperformed by some simple classifiers as the k-NN classifiers.
+Nowadays, new neural network architecture have been proposed in similar domain like optical character recognition, speech recognition or computer vision, but they have never been used in the field of OMR.
+The k-nearest neighbour algorithm used in this context is the most simple classification algorithm used.
+They implemented it using euclidean distance and it gave the second best result after SVM.
+Support vector machine have also been used for this task.
+They used a radial basis function network and at the time of the study, it was the classifier that gave the best result.
+All of these classifiers first needed an explicit segmentation phase except the HMM classifier.
+For this internship we are looking for new way of recognizing broken and overlapping symbols and one of our hypothesis is that by merging the segmentation and recognition phase, we will improve the recognition rate.
+That is why we will review more in detail the HMM proposition later in this work.
+
+\subsubsection{Music notation reconstruction}
+
+The music notation reconstruction has the specific task to interpret the spatial relationship between different primitives or symbol recognized.
+This kind of algorithm has to deal with the complex two dimensional structure of music notation, as a consequence the positional information of a music symbol is very important as well as the context of the symbol.
+
+OMR system has used fuzzy models or grammars to formalize musical notation.
+We can differentiate two kinds of grammars.
+Rule based grammar, or graph based grammar.
+In this work, we will focus on rule based grammar by presenting the DMOS system \cite{couasnon_dmos_2001} as it is the system that will be used during this internship.
+
+\subsection{DMOS: Generic Document Recognition Method}
+
+DMOS, "Description and MOdification of Segmentation", is a general method for the recognition of structured documents.
+Its main purpose is to separate the semantic and graphic knowledge of the program that do the recognition task because of the well known paradox in computer vision that there is a discrepancy between the way knowledge describe an object and the way objects have to be recognized \cite{couasnon_dmos_2001}.
+Its main objective is to describe a generic method for recognizing any structured documents.
+
+The system implemented in \cite{couasnon_dmos_2001} is mainly separated in two parts.
+First, the system use a grammar for formalizing the syntax and graphical organization of the documents.
+This grammar is derived from the EPF grammar (Enhanced Position Formalism) and is expressed in a Prolog dialect called $\lambda Prolog$.
+There are two levels of grammar:
+\begin{itemize}
+  \item A physical level: formalization of the graphical organization of the documents.
+  \item A logical level: work on the semantic level of the document.
+\end{itemize}
+The grammar manipulate \textit{terminals} that are simple graphical units like a line or a little connected component.
+Its by agglomerating these terminals that the grammar construct complex structure that will describe the graphical and semantical organization of the document.
+For this to work, the article introduce new spatial and logical operator that allows them to add expressivity to the grammar.
+
+The second part is where the originality of the approach is found.
+Classical computer vision system that use a grammar only use the grammar at the end of the recognition chain.
+Some tool for segmenting and recognition is used and then symbols that are recognized are fed into the grammar for possible recognition errors and reconstruction of the semantic notation of the document.
+In the DMOS system presented by \cite{couasnon_dmos_2001}, the grammar totally guide the segmentation and recognition of the document.
+The grammar is compiled into appropriate parsers that do the low-level image recognition of the documents.
+It's the grammar that decide on how to segment the document, then feed the candidates into classifiers that will confirm the label of the symbol.
+The grammar can then check if the recognition is consistent, and if it is not, it can redo the segmentation step for finding a better solution.
+The grammar can therefore use the context for segmentation \textit{and} recognition tasks.
+
+This system has been initially implemented for recognizing orchestral scores and has been validated on the task of recognizing around 5000 old military forms.
+However this system is still having difficulties on recognizing broken and overlapping symbols in scores.
+Since the proposition of the orchestral scores recognition using DMOS, many new techniques in computer vision for the segmentation and recognition task have been found.
+We will now review some of those techniques.
+
+\section{Merging recognition and segmentation phase for classification of music symbols}
+
+Our hypothesis is that by merging the segmentation task at the symbol level, we will improve the recognition rate of our system.
+An attempt has been done in this direction by using a hidden markov model for recognizing old and very simple scores.
+
+\subsection{Hidden Markov Model}
+
+Authors in \cite{pugin_optical_2006} present a hidden markov model for recognizing old and very simple scores.
+They decided to avoid the staff removal step and the segmentation step because they considered that these steps are an important source of errors.
+They trained their model with a dataset of 240 pages of music scores containing 175 symbols.
+The partitions were manually annotated with graphical informations.
+The recognition process used imitate speech recognition as they used a sliding windows for scanning the score.
+They simplified the problem by only having a succession of notes from left to right.
+As a consequence, their system couldn't handles chords because the model was sequential and unidirectional.
+They computed 4 to 40 features from the raw score image and used the Baum-Welch algorithm for training the HMM.
+The recognition rate obtained was around 96\% but this rate is highly dependent of the feature chose, the sliding windows width, \ldots
+
+This method has the advantage to avoid explicit segmentation by using a hidden markov model.
+But this model will be hard to be applied on more complex score as they have simplified the problem by using only unidimensional score.
+Indeed the objective of this internship is to work on big and complex orchestral score.
+The HMM is also known for having difficulties to use context information because of their architecture principle.
+This is why, we will introduce next another architecture used on optical character recognition and speech recognition that avoid totally the segmentation during the training phase and have no problem with using long-term dependency.
+
+
+\subsection{Multi-Dimensional Long Short-Term Memory Recurrent Neural Network}
+
+In the Optical Character Recognition field, a new kind of architecture has been presented by Graves and Schmidhuber \cite{graves_offline_2009}.
+They used Long Short-Term Memory Recurrent Neural Network (LSTM RNN) \cite{hochreiter_long_1997} for dealing with long term dependency.
+The context information has been handled by a Multi-Dimensional Recurrent Neural Network (MD RNN) and they avoided explicit segmentation by using a Connectionist Temporal Classification (CTC) output layer \cite{graves_connectionist_2006}.
+An image is not just a one dimensional sequence of data needed for the input of the CTC, so they used a specific type of architecture for reducing a two dimensional image to a one dimensional sequence.
+
+\subsubsection{Long Short-Term Memory Recurrent Neural Network}
+
+RNN is a powerful neural network that are designed for working with sequence.
+However, simple RNN are known for having the vanishing and exploding gradient problem.
+Indeed, when training a RNN with the classical gradient descent algorithm, each time-step is like a new layer to network, making it a very deep network.
+Long Short-Term Memory Recurrent Neural Network is designed to resolve this problem.
+
+To control the variation of the gradient, they truncate the gradient during the training phase.
+They used a "constant error carrousels" to ensure constant error flow through the network.
+The base unit of the network is not a neuron but a memory cell constituted of two gates.
+First, a multiplicative input gate unit to protect the memory stored in the unit from irrelevant input.
+Second, a multiplicative output gate used to protect other units from the irrelevant memory of the unit.
+Each of these units have to be properly trained for respectively learn which error to release or to keep.
+
+In \cite{hochreiter_long_1997}, they presented this kind of RNN using three fully connected layers: one input layer, one hidden layer, one output layer.
+The main advantage of the LSTM RNN is to be able to deal naturally with long-term dependency in the data sequence.
+Next we will see how to use the context when working with two dimensional data like an image.
+
+\subsubsection{Multi-Dimensional Recurrent Neural Network}
+
+The novelty presented in \cite{graves_offline_2009} is the use of Multi-Dimensional (MD) RNN.
+This network is a generalization of Bi-Directional Neural Network.
+
+\subsubsection{Connectionist Temporal Classification}
+
+\subsubsection{Network Hierarchy}
+
+\subsection{A2IA recognition system proposition}
+
+\section{Localizing object in image with convolutional neural network}
+
+\section{Conclusion}
+
+\section*{References}
+
+\bibliographystyle{plain}
+\bibliography{model}
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
