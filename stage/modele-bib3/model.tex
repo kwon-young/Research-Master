@@ -315,20 +315,153 @@ In \cite{hochreiter_long_1997}, they presented this kind of RNN using three full
 The main advantage of the LSTM RNN is to be able to deal naturally with long-term dependency in the data sequence.
 Next we will see how to use the context when working with two dimensional data like an image.
 
-\subsubsection{Multi-Dimensional Recurrent Neural Network}
+\subsubsection{Multi-Dimensional Recurrent Neural Network (MD RNN)}
 
-The novelty presented in \cite{graves_offline_2009} is the use of Multi-Dimensional (MD) RNN.
+The novelty presented in \cite{graves_offline_2009} is the use of Multi-Dimensional RNN.
 This network is a generalization of Bi-Directional Neural Network.
+Bi-directional neural network is used for using past and future context for 1 dimensional data by adding recurrent connection to the previous sample and the future sample.
+Similarly, MD RNN generalize this principle for N dimensions.
+For example, an image is a two dimensional data, so a MD RNN used on an image adds 4 recurrent connections to all spatial directions.
+To do this, \cite{graves_offline_2009} describe a four layer network where each layer scans from each corner of the image.
+This way, it allows the network to create a flexible internal representation of the surrounding context.
+Furthermore, this kind of networks are very robust to local distortion, making it an ideal system for recognizing handwritten data.
+The MD RNN is trained with the backpropagation algorithm generalized to N dimensions.
 
-\subsubsection{Connectionist Temporal Classification}
+This kind of network could be very interesting for recognizing musical symbols, specially handwritten symbols because of their robustness to distortion.
+Furthermore, the context is extremely important for recognizing a symbol in a score.
+However, it is still early to say if this kind of network could learn the complex structure of a score.
+
+\subsubsection{Connectionist Temporal Classification (CTC)}
+
+The work of \cite{graves_connectionist_2006} introduced the Connectionist Temporal Classification layer that allows a new way of training RNN for labelling unsegmented sequence data directly.
+The CTC layer is an output layer designed for one dimensional sequence labelling.
+The principle is to train the network to estimate the conditional probabilities of all the possible labellings.
+If the alphabet used during a recognition contains N symbols, the CTC layer will contain N+1 symbols because it adds the blank output.
+The output of a CTC layer is normalized using a softmax function.
+Then, all repetitions and blanks are removed to form blocks of symbols.
+Training is done with the back propagation in time algorithm with the negative log probability function as the objective function.
+
+The main advantage of this proposition is the fact that the network can be trained without presegmenting the ground truth data, or postprocessing the output of the network.
+However in the context of OMR, the major problem is that the CTC layer is designed to label one dimensional sequence data, and we have already pointed out that a score is a complex two dimensional structure.
+What we need from the output of an OMR system is the label of the symbol, but also his exact coordinate in the image.
+This problem is further developed in the next section where the authors of \cite{graves_offline_2009} show how they transform an image into a one dimensional sequence of data.
 
 \subsubsection{Network Hierarchy}
 
+We will now present the overall hierarchy used in \cite{graves_offline_2009} for their OCR system.
+The most common way for doing image recognition is not to directly work on the pixel level of the image but to first extract \textit{features} of the image and then do the recognition phase.
+A feature can be describe as a small piece of information extracted from the image.
+The authors use this same principle however they have a hierarchical approach for feature extraction.
+This allows them to build complex visual properties from the raw image.
+In computer vision, this kind of structure is called an \textit{inverted pyramid structure}: small layers at the bottom of the hierarchy and large layer at the top of the hierarchy for creating an efficient network.
+
+The hierarchical structure is composed by interleaving MDLSTM layers with feedforward network.
+The activation of MDLSTM layers are gathered into blocks.
+The purpose of these blocks is mainly to have a local contextual information and also to reduce the area of the activation arrays: at each level of the network, the vertical axis of the data is reduced to finally form a one dimensional sequence from a two dimensional block of data.
+This is called \textit{subsampling}.
+For the specific application of OCR, authors have found that three layers of MDLSTM/Feedforward gives the best results.
+
+This architecture has a dual property of reducing a two dimensional image into a one dimensional sequence and to be able to train and use the entire system without segmenting the data.
+The first characteristic is not interesting in the context of OMR because we already said that a score is not a one dimensional sequence of data.
+However, the second characteristic is very likely to improve the recognition of broken and overlapping symbols.
+We will now see how this architecture can be used for complex recognition process as the Maurdor challenge.
+
 \subsection{A2IA recognition system proposition}
 
-\section{Localizing object in image with convolutional neural network}
+We already highlighted the fact that OCR is a similar to OMR but it has the main difference is that the structure to recognize is much simpler in OCR.
+However, this is only true at the symbol level.
+In fact, if we zoom out and consider an entire document, the recognition process can be much more complex.
+For example, the Maurdor challenge is a computer vision and document recognition contest with some very hard data to recognized.
+The A2IA team has submit an entire document processing chain and ranked first at the second Maurdor evaluation for both printed and handwritten text recognition for French, English and Arabic \cite{moysset_a2ia_2014}.
+The document processing chain is composed of:
+\begin{itemize}
+  \item Document layout analysis
+  \item Write type identification
+  \item Language identification
+  \item Text recognition
+  \item Logical organization extraction
+  \item Information extraction
+\end{itemize}
+They used the recognition system previously explained for the text recognition part, with little changes:
+\begin{itemize}
+  \item Adapted the sub-sampling filter size to fit the image resolution.
+  \item Tuned hidden layer sizes for the dataset
+\end{itemize}
+One important improvement to the training phase was the use of dropout.
+
+However, the interesting part here is their techniques for automatically prepare the data for the training phase.
+Indeed, instead of just recognizing lines of text, a paragraph of text was given to the input of the text recognition module.
+That's why they used an automatic system for the alignment of annotations and images of lines of text.
+They used a line detection algorithm to extract lines of text and they applied a constrained line recognition system to match the lines image to a part of the ground-truth text.
+In the context of this internship, we could also use the powerful grammar present in the DMOS system to roughly segment a score and spot zones with broken and overlapping symbols.
+Then, we could feed these zones to a recognition system like the one we saw previously.
+
+\section{Object Recognition Techniques}
+
+After reviewing some techniques used in OCR and Speech Recognition, it could be interesting to see what kinds of recognition systems are used for object recognition in an image.
+Nowadays, deep neural networks are widely used in object recognition and are known to be the state of the art in image recognition \cite{erhan_scalable_2014}.
+We will also review another proposition \cite{ba_multiple_2014} that concentrate on modelling an effective visual attention model.
+
+\subsection{Deep Neural Network}
+
+In \cite{erhan_scalable_2014}, they used a deep neural network for detecting and localizing multiple scalable object in an image.
+A common way to localize different object in an image is to train one object detector by class to recognize.
+As the number of class grows, it become computationally difficult to scale up the system.
+The originality of this works is to train one single Deep Neural Network that is \textit{class agnostic} and use it to localize any object of interest in an image.
+This deep neural network is structured with multiple convolutional neural network and multiple max-pooling layer.
+The output is normalized with a soft-max layer.
+The recognition system proposed in \cite{erhan_scalable_2014} has the capability to output a bounding box to localize objects and a confidence score about the label of all objects detected.
+The strength of this proposition is its property to handle naturally multiple instance of an object in an image.
+
+In the context of OMR, this kind of network could be interesting as it can localize precisely with a bounding box an object in an image.
+The fact that the bounding box is scalable is also interesting because there are multiple musical symbols that can used with different sizes.
+However, the training phase is still a problem, because training data still have to be graphically annotated to point the ground-truth location of the object.
+In OMR, such database doesn't exist.
+In fact, OMR database are not well developed.
+There are some music symbols databases used for training simple classifiers and databases of images of music scores exist with often the semantical transcription of the score using the MusicXML format or the Midi format but the graphical annotation of each symbols is not existent.
+
+To address this problem, we will now introduce another use of RNN applied for Object Recognition.
+
+\subsection{Multiple Object Recognition with Visual Attention}
+
+Authors of \cite{ba_multiple_2014} proposed an attention-based model inspired from the human vision used for recognizing multiple objects in images.
+Studies on human vision show that a human gradually construct its environment representation by focusing its attention on successive small parts of the image.
+This principle is used here by using a Deep Recurrent Neural Network that process an image by taking \textit{glimpse} at different resolutions.
+A glimpse is a small part of the image centered on a special location.
+Furthermore, they used reinforcement learning to train the network to learn on how to scan the image.
+The model can learn to localize and recognize multiple objects although it was only trained with class labels.
+They evaluate the system by using this model to transcribe house number from Google Street View.
+This model showed to be more accurate than state of the art convolutional networks although the model is using fewer parameters and less computations.
+
+The Visual Attention model process the image in N sequential steps.
+For each step, the model scans a new location and extract a glimpse at this location.
+From this glimpse, the model update its internal representation of the image.
+The model use a special classifier for recognizing objects.
+Finally, the model output a new location to scan from.
+The model is divided successively in sub-component and each of those components is a neural network.
+The first network is the glimpse network used to extract features from the glimpse with two input layer: a convolutional layer that take a glimpse as an input and a fully connected layer that take the location of the glimpse as an input.
+These two layers are then combined by multiplying the output of each layer.
+The next network is a recurrent network composed of two recurrent layer composed of LSTM units.
+It's work is to aggregate informations extracted from successive glimpses while preserving the spatial information.
+Then a third network called the emission network is used to predict the location of the next glimpse.
+A context network is used to compute an initial state for the system and provide the location of the first glimpse.
+Finally a classification network is used to output a prediction from the first RNN layer.
+It is composed of a fully connected hidden layer and a softmax output layer.
+
+This kind of model could be useful in our OMR system.
+The fact that this model can locate and recognize symbol although the network was only trained with class labels in interesting because in OMR, we only have databases containing class labels symbols.
+Furthermore, this system can locate an object in an image, making it ideal for an OMR system.
+Without having this system learn how to read a complex score, we could use the grammar to make a first rough segmentation and then use this recognition system for locating accidentals, key signatures, time signature, silences \ldots
 
 \section{Conclusion}
+
+A renewed interest is showing toward OMR in the computer vision and pattern recognition research field because it has still many challenges to overcome.
+While OCR is now very advanced and has human like results, we still have many difficulties in recognizing music scores because of its complex structure and variety of symbols.
+Many solutions have been proposed for every step of OMR: preprocessing, staff removal, music symbols segmentation and recognition, music notation reconstruction.
+Especially with the DMOS system that will be used in this internship, its powerful grammar is capable of guiding the segmentation, recognition and reconstruction of the music score.
+However, the recognition of broken and overlapping symbols are still very difficult to handle.
+The principle hypothesis of this study is that by avoiding explicit segmentation for the segmentation 
+
 
 \section*{References}
 

@@ -1,5 +1,15 @@
 # Multiple Object Recognition with Visual Attention
 
+## Abstract
+
+attention-based model for recognizing multiple objects in images.
+deep recurrent neural network.
+reinforcement learning attend to most relevant regions of the input image.
+model learns to localize and recognize multiple objects.
+trained only with class labels during training.
+evaluate on transcribing house number from Google Street View.
+more accurate than state-of-the-art convolutional networks with fewer parameters and less computation.
+
 adapted from human vision
 
 deep recurrent neural network

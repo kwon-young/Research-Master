@@ -411,6 +411,12 @@ In [@erhan_scalable_2014], use of Deep convolutional neural network for scalable
     * drawbacks:
         * they still have to be trained on data with graphical annotation which we don't have in OMR.
 
+## Multiple Object Recognition with Visual Attention
+
+in [@ba_multiple_2014]:
+
+proposed attention-based model adapted
+
 # Conclusion
 
 * OMR is an hybrid domain between structured document recognition and image recognition
