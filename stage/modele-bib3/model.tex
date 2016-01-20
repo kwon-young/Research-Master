@@ -1,5 +1,6 @@
 \documentclass[11pt]{sdm}
 \usepackage{graphicx}
+\usepackage{hyperref}
 
 %numeroter les pages
 \pagestyle{plain}
@@ -10,8 +11,9 @@
 \usepackage[utf8]{inputenc}
 \supervisorOne{Bertrand \textsc{Coüasnon}}
 \supervisorTwo{Yann \textsc{Ricquebourg}}
-\supervisorTwo{Richard \textsc{Zanibbi}}
-\team{Intuidoc}
+\teamOne{Intuidoc Irisa France}
+\supervisorThree{Richard \textsc{Zanibbi}} % ne fait pas partie de irisa, mettre RIT USA
+\teamTwo{RIT USA}
 %One of:
 % ens-Rennes  esir    insa-rennes logoENIB  rennes1  UBO
 % enssat header logo_ENIB   logoUbs   tel-br supelec
@@ -126,37 +128,37 @@ Many music composers still find awkward to directly write music with a music com
 The use of OMR in these situations could integrate into the working flow of music composer their habit to write music on paper and automatically transcribe them in a computer readable format.
 
 A score is a structured document used to formalize music.
-Its organization is hierarchical:
+Its organization is hierarchical, for example:
 \begin{itemize}
-  \item Different staffs are used for different instruments or voices.
-  \item Each staffs can contain one or more bar lines.
-  \item A bar line lines contain musical symbols.
-  \item A music symbols like a note is constructed by the association of graphical primitives like a dot, stem and flags \ldots
+  \item Different staves are used for different instruments or voices;
+  \item Each staff contain five lines;
+  \item A staff contains music symbols;
+  \item A music symbol like a note is constructed by the association of graphical primitives like a dot, stem and flags \ldots
 \end{itemize}
 There are multiple symbols in musical notation resumed in figure \ref{list_symbols}: clefs, notes and rests, breaks, accidentals and key signatures, time signatures, dynamics \ldots 
 \begin{figure}[btp]
   \includegraphics[scale=0.7]{list_symbols}
-  \caption{\label{list_symbols} List of musical symbols \cite{fornes_analysis_2014}. }
+  \caption{\label{list_symbols} Non-exhaustive list of musical symbols \cite{fornes_analysis_2014}. }
 \end{figure}
 
 OMR systems are faced with multiple problems such as:
 \begin{itemize}
-  \item The high density of symbols
-  \item High connectivity between symbols
-  \item High variation of symbols
-  \item Overlapping and broken symbols
+  \item The high density of symbols;
+  \item High connectivity between symbols;
+  \item High variation of symbols;
+  \item Overlapping and broken symbols.
 \end{itemize}
-A score has a unidirectional direction of reading that correspond to the time flow, but multiple things can happen simultaneously.
+A score has a unidirectional direction of reading that corresponds to the time flow, but multiple things can happen simultaneously.
 As a consequence, the output of an OMR system is not just a one dimensional sequence of symbols.
-All graphical symbols must be localized horizontally and vertically in order to deduce their relations between each other’s.
+All graphical symbols must be localized horizontally and vertically in order to deduce their relations between each other.
 
 Authors like in \cite{rebelo_optical_2012} or \cite{fornes_analysis_2014} generally describe an OMR system by identifying multiple steps:
 \begin{itemize}
-  \item pre-processing
-  \item staff removal
-  \item symbol segmentation
-  \item symbol recognition
-  \item music notation reconstruction
+  \item Pre-processing;
+  \item Staff removal;
+  \item Symbol segmentation;
+  \item Symbol recognition;
+  \item Music notation reconstruction.
 \end{itemize}
 We will first review all these different steps, but we will particularly focus our attention on symbol segmentation and recognition because it is the central theme of this internship.
 We will also present more in details the DMOS system at the end of this part because of its role in this internship.
@@ -170,23 +172,24 @@ Before anything, the image has to be converted into a binary image.
 This operation is a classical step of computer vision tasks.
 Then, optional operation can be applied to enhance the quality of the score.
 \begin{itemize}
-  \item skew correction for staff line: used for simplifying the staff removal step.
-  \item noise removal for bad scanning and digitization.
-  \item some other morphological operations \ldots
+  \item Skew correction for staff line: used for simplifying the staff removal step;
+  \item Noise removal for bad scanning and digitization, for example see the figure \ref{old_score} on page \pageref{old_score};
+  \item Some other morphological operations \ldots
 \end{itemize}
 
 \subsubsection{Staff removal}
 
-One characteristic of a music score is that most of the symbols are connected by the five bar lines that constitute a staff.
-These bar lines are an obstacle for almost every classical technique of segmentation and recognition used in computer vision.
+One characteristic of a music score is that most of the symbols are connected by the five lines that constitute a staff.
+These lines are an obstacle for almost every classical technique of segmentation and recognition used in computer vision.
 This is why, most OMR systems first remove these lines.
 
 A fast way to do this is to do a horizontal projection of a music staff.
-The resulting vertical position of an intensity peak is an indicator of the position of a bar line.
-It is worth noting that these kind of projection or run lengths techniques do not deal well with overlapping symbol, and often result in breaking symbols.
+The resulting vertical position of an intensity peak is an indicator of the position of a line.
+It is worth noting that these kind of projection or run length techniques do not deal well with overlapping symbols, and often result in breaking symbols.
 Candidate assemblage and contour tracking are another way to remove a staff that are relatively fast to compute and can sometimes deal with overlapping symbols.
 Graph path search techniques can produce really good results, but are slow to compute.
-Finally, detection of lines in an image can be done by using complex filters like a Hough transform or a Kallman filter like the one used in the DMOS system \cite{couasnon_dmos_2001}.
+Finally, detection of lines in an image can be done by using complex filters like a Hough transform or a Kalman filter like the one used in the DMOS system \cite{couasnon_dmos_2001}.
+The Kalman filter used in DMOS has the capability to recognize curved line, useful to detect hand written line.
 
 \subsubsection{Music symbol segmentation and recognition}
 
@@ -201,7 +204,7 @@ This complexity is often aggravated because of bad digitalization and paper degr
 Techniques used by OMR systems during this step are very diverse and many solutions have been proposed.
 However, most of OMR systems first does a segmentation step and then apply recognition techniques to extract the correct symbol.
 A simple way of segmenting a score is by first extracting graphical primitives like lines, blobs, circles \ldots and then joins these graphical primitives for the recognition stages.
-Symbols can be extracted and recognize by using template matching techniques.
+Symbols can be extracted and recognizeed by using template matching techniques.
 But these kind of techniques have many drawbacks as they are slow to compute and have a really low robustness when recognizing a symbol.
 One way to recognize a symbol from a bounding box candidate is by computing simple operation that will result in simple features of the region of interest and then compare these features with those same features computed from symbols models.
 This same philosophy can be used with different techniques by using symbol descriptors like centroids, Zernike moments, and decision trees.
@@ -213,14 +216,14 @@ Their proposition has the interesting property to merge the segmentation task an
 The use of simple neural networks like a multi-layered perceptron also have been reviewed for recognizing music symbols.
 The classic backward-propagation algorithm has been used for the training algorithm.
 The results were disappointing as they were outperformed by some simple classifiers as the k-NN classifiers.
-Nowadays, new neural network architectures have been proposed in similar domain like OCR, Speech Recognition or Computer Vision, but they have never been used in the field of OMR.
+Nowadays, new neural network architectures have been proposed in similar domain like OCR, Speech Recognition or Computer Vision, but to our knowledge, they have never been used in the field of OMR.
 
 The k-nearest neighbor algorithm used in this context is the simplest classification algorithm used.
 They implemented it using Euclidean distance and it gave the second best result after the Support Vector Machine (SVM) classifiers.
 SVM used a radial basis function network and at the time of the study, it was the classifier that gave the best result.
 All of these classifiers first needed an explicit segmentation phase except the HMM classifier.
 For this internship, we are looking for new ways of recognizing broken and overlapping symbols and one of our hypothesis is that by merging the segmentation and recognition phase, we will improve the recognition rate.
-That is why we will review more in detail the HMM proposition later in this work.
+That is why we will review more in detail the HMM proposition later in this work, see section \ref{ssec:HMM}.
 
 \subsubsection{Music notation reconstruction}
 
@@ -233,7 +236,7 @@ We can differentiate two kinds of grammars.
 Rule based grammar, or graph based grammar.
 In this work, we will focus on rule based grammar by presenting the DMOS system \cite{couasnon_dmos_2001} as it is the system that will be used during this internship.
 
-\subsection{DMOS: Generic Document Recognition Method}
+\subsection{DMOS: a generic document recognition method}
 
 DMOS, "Description and MOdification of Segmentation", is a general method for the recognition of structured documents.
 Its main purpose is to separate the semantic and graphic knowledge of the program that do the recognition task because of the well-known paradox in computer vision that there is a "discrepancy between the way knowledge describe an object and the way objects have to be recognized" \cite{couasnon_dmos_2001}.
@@ -243,7 +246,7 @@ First, the system uses a grammar for formalizing the semantic and graphical orga
 This grammar is derived from the EPF grammar (Enhanced Position Formalism) and is expressed in a Prolog dialect called $\lambda Prolog$.
 There are two levels of grammar:
 \begin{itemize}
-  \item A physical level: formalization of the graphical organization of the documents.
+  \item A physical level: formalization of the graphical organization of the documents;
   \item A logical level: work on the semantic level of the document.
 \end{itemize}
 The grammar manipulates \textit{terminals} that are simple graphical units like a line or a little connected component.
@@ -268,7 +271,7 @@ We will now review some of those techniques.
 Our hypothesis is that by merging the segmentation task at the symbol level, we will improve the recognition rate of our system.
 An attempt has been made in this direction by using a Hidden Markov Model for recognizing old and very simple scores.
 
-\subsection{Hidden Markov Model}
+\subsection{Hidden Markov Model} \label{ssec:HMM}
 
 Authors in \cite{pugin_optical_2006} present a Hidden Markov Model for recognizing old and very simple scores as show in figure \ref{old_score_HMM}.
 They decided to avoid the staff removal step and the segmentation step because they considered that these steps are important sources of errors.
@@ -302,7 +305,7 @@ An image is not just a one dimensional sequence of data needed for the input of 
 RNN is a type of neural network that are designed to recognize sequences of data.
 However, simple RNN are known for having the vanishing and exploding gradient problem.
 Indeed, when training a RNN with the classical gradient descent algorithm, each time-step is like a new layer of the network, making it a very deep network.
-Long Short-Term Memory Recurrent Neural Network is designed to resolve this problem.
+Long Short-Term Memory Recurrent Neural Network presented in \cite{hochreiter_long_1997} is designed to resolve this problem.
 
 To control the variation of the gradient, they truncate the gradient during the training phase.
 They used a "constant error carrousels" to ensure constant error flow through the network.
@@ -319,7 +322,7 @@ Next we will see how to use the context when working with two dimensional data l
 \subsubsection{Multi-Dimensional Recurrent Neural Network (MD RNN)}
 
 The novelty presented in \cite{graves_offline_2009} is the use of Multi-Dimensional RNN.
-This network is a generalization of the Bi-Directional Neural Network.
+This network is a generalization of the Bi-Directional Neural Network presented in \cite{schuster_bidirectional_1997}.
 Bi-directional Neural Network is used for handling past and future context for 1 dimensional data by adding recurrent connections to the previous sample and the future sample.
 Similarly, MD RNN generalize this principle for N dimensions.
 For example, an image is a two dimensional data, so a MD RNN used on an image adds 4 recurrent connections in all spatial directions.
@@ -332,7 +335,7 @@ This kind of network could be very interesting for recognizing musical symbols, 
 Furthermore, the context is extremely important for recognizing a symbol in a score.
 However, it is still too early to say if this kind of network could learn the complex structure of a score.
 
-\subsubsection{Connectionist Temporal Classification (CTC)}
+\subsubsection{Labelling unsegmented sequence of data}
 
 The work of \cite{graves_connectionist_2006} introduced the Connectionist Temporal Classification layer that allows a new way of training RNN for labelling unsegmented sequence of data directly.
 The CTC layer is an output layer designed for one dimensional sequence labelling.
@@ -365,28 +368,28 @@ For the specific application of OCR, authors have found that three layers of MDL
 This architecture has a dual property of reducing a two dimensional image into a one dimensional sequence and to be able to train and use the entire system without segmenting the data.
 The first characteristic is not interesting in the context of OMR because we already said that a score is not a one dimensional sequence of data.
 However, the second characteristic is very likely to improve the recognition of broken and overlapping symbols.
-We will now see how this architecture can be used for complex recognition process as the Maurdor challenge.
+We will now see how this architecture can be used for complex recognition process as the Maurdor challenge, see the section \ref{ssec:maurdor}.
 
-\subsection{A2IA recognition system proposition}
+\subsection{Multi-lingual text recognition system at the Maurdor evaluation} \label{ssec:maurdor}
 
 We already highlighted the fact that OCR is a similar to OMR, but the main difference is that the structure to recognize is much simpler in OCR.
 However, this is only true at the symbol level.
 In fact, if we zoom out and consider an entire document, the recognition process can be much more complex.
-For example, the Maurdor challenge is a computer vision and document recognition contest with some very hard data to recognize.
+For example, the Maurdor evaluation \cite{_maurdor_2016} is a computer vision and document recognition contest with some very hard data to recognize like the figure \ref{maurdor}.
 The A2IA team has submitted an entire document processing chain and ranked first at the second Maurdor evaluation for both printed and handwritten text recognition for French, English and Arabic \cite{moysset_a2ia_2014}.
 The document processing chain is composed of:
 \begin{itemize}
-  \item Document layout analysis
-  \item Write type identification
-  \item Language identification
-  \item Text recognition
-  \item Logical organization extraction
-  \item Information extraction
+  \item Document layout analysis;
+  \item Write type identification;
+  \item Language identification;
+  \item Text recognition;
+  \item Logical organization extraction;
+  \item Information extraction.
 \end{itemize}
 They used a MD LSTM Recurrent Neural Network previously explained in the text recognition part, with little changes:
 \begin{itemize}
-  \item Adapted the sub-sampling filter size to fit the image resolution.
-  \item Tuned hidden layer sizes for the dataset
+  \item Adapted the sub-sampling filter size to fit the image resolution;
+  \item Tuned hidden layer sizes for the dataset.
 \end{itemize}
 One important improvement to the training phase was the use of a powerful regularization technique called dropout.
 
@@ -397,6 +400,7 @@ They used a line detection algorithm to extract lines of text and they applied a
 In the context of this internship, we could also use the powerful grammar present in the DMOS system to roughly segment a score and spot zones with broken and overlapping symbols.
 Then, we could feed these zones to a recognition system like the one we saw previously.
 \begin{figure}[btp]
+  \centering
   \includegraphics[scale=0.5]{maurdor}
   \caption{\label{maurdor} Example of a document from the Maurdor Challenge \cite{moysset_a2ia_2014}. }
 \end{figure}
