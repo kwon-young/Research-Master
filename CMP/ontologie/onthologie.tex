@@ -1,0 +1,63 @@
+%%% HEAD
+\documentclass[a4paper]{article}
+
+\usepackage{fullpage} % Package to use full page
+\usepackage{parskip} % Package to tweak paragraph skipping
+%\usepackage{tikz} % Package for drawing
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+
+\usepackage{graphicx}
+
+\title{Ontologie de la notation musicale}
+\author{Arthur Le Guennec \and Kwon-Young Choi}
+\date{\normalsize\today}
+%%% END HEAD
+
+\begin{document}
+\maketitle
+
+\section{Ontologies : definition}
+
+Une ontologie est un ensembole structuré de terme et de relations permettant d'expliciter formellement les connaissances spécifiques lié à un domaine.
+
+* grosse expension ces dernières années
+* existe des ontologies sur tout et n'importe quoi
+* une ontologie permet de partager des connaissances sur un domaine entre des personnes et des agents virtuels
+* une ontologie est réutilisable
+* une ontologie permet de séparer la connaissance lié à un domaine et la connaissance lié au logiciel
+* permet d'analyser les connaissances d'un domaine.
+
+Il existe plusieurs language pour définir une ontologie.
+Dans le cardre du Web sémantique, le W3C (World Wide Web Consortium) a énormément travaillé à développer et standardiser l'utilisation des ontologies.
+Nous allons d'ailleurs utiliser ici le language OWL (Web Ontology Language) qui s'appuie sur le standard RDF et la syntaxe XML et qui a été spécifié par le W3C.
+* une ontologie est constitué de classes et de sous-classes
+* les relations sont explicités avec des triplet RDF
+
+\section{Spécification d'une ontologie sur la notation musicale}
+
+Une ontologie est utilisé pour expliciter les connaissances lié à un domaine spécifique.
+Nous avons choisi ici de réaliser une ontologie pour expliciter la notation musicale.
+La musique occidentale utilise une grammaire bidimensionnelle qui permet de décrire la hauteur, le rythme et le tempo d'une musique.
+Cela permet la sauvegarde et le partage de la musique.
+
+La notation musicale est donc constitué d'un ensemble de symboles organisés selon une grammaire bidimensionnelle.
+On qualifie cette grammaire de bidimensionnelle car le temps est symbolisé par la progression de la partition de droite à gauche et la synchronisation temporelle est exprimé par l'alignement vertical des symboles.
+De plus, l'organisation d'une partition musicale est hiérarchique.
+En effet, une partition est constitué de portée, qui contient elle-même des mesures.
+La différente hauteur des notes est modélisé par cinq lignes.
+Chaque lignes et interlignes correspondent à une hauteur de notes particulières.
+
+La notation musicale utilisent une grande variété de symboles, même si ces symboles restent assez simples dans leur formes.
+On trouve dans la figure ? un résumé de la plupart des symboles musicaux.
+Durant ce travail, nous avons voulu représenté grâce à une ontologie l'organisation d'une partition musicale très simple.
+Nous avons pris comme exemple de modéliser la partition de "J'ai du bon tabac dans ma tabatière".
+Nous avons donc tout d'abord déclaré des classes de symboles comme les clefs qui contient des sous-classes qui représentent les différentes clefs utilisées dans la notation musicale comme la clef de sol.
+La notion de temps est très important dans une partition musical.
+
+
+\end{document}

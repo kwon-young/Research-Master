@@ -114,7 +114,7 @@ The book problem :
 From Slater and Usoh (1993) :
 > L'utilisateur est ailleurs que là où il est physiquement,
 > le **ailleurs** est formé par les images, sons et sensations
-> physiques fournis aux ses de l'utilisateur par le système
+> physiques fournis aux sens de l'utilisateur par le système
 > générant l'environnement virtuel.
 
 From Bouvier (2009) :
@@ -138,11 +138,10 @@ Tremendous role of *Action*
 [for more] (http://ai.ato.ms/MITECS/Entry/gibson1.html)
 or see slide 21
 * *Proprioception* : congruence between virtual and real self.
-* *Causality* : real world pysics, even simple
-* *Enaction* : cognition of the world comme with *embodied* action
+* *Causality* : real world physics, even simple
+* *Enaction* : cognition of the world as *embodied* action
 
 embodied model of immersion and presence :
-
 
 * Presence
   * Spatial presence
@@ -162,6 +161,7 @@ Assessment method of presence
   * lourd à utiliser
   * il existe déjà des questionnaires
   * static : effet global, gomme l'aspect dynamique
+* extrinsic measurements
 
 method to measure VR
 
@@ -251,9 +251,9 @@ detection of connections events
 
 ### User Experience and Virtual Reality
 
-#### Communication is a copperative activity
+#### Communication is a cooperative activity
 
-* participant intentionaly, and attentionaly, share information and perform helping actions
+* participant intentionally, and attentionally, share information and perform helping actions
 * Grounding : process to share common ground
   * important part of conversation is dedicated to grounding
   * referring : implicit or explicit
@@ -286,7 +286,7 @@ Biocca 1997 :
 
 #### social presence and user engagement
 
-* hard to mesure because
+* hard to measure because
   * dynamic
 
 * prada and paiva, 2009
@@ -303,11 +303,11 @@ Biocca 1997 :
   * limited calculus capacity
   * find the right balance of realism and functionality
 
-#### Visual apperance and beyond
+#### Visual appearance and beyond
 
 * Realism is not all
   * user engagement with task-related interface characters
-* ressemblance of agent and user have an impact
+* resemblance of agent and user have an impact
   * no clear response
 * proteus effect
 * social psychology
@@ -325,7 +325,7 @@ Biocca 1997 :
 
 * Virtual reality
   * full immersing setup
-  * interaction devies for natural interaction
+  * interaction devices for natural interaction
   * cognitive metaphors (eg. locomotion)
   * expressive virtual humans
     * real-time face

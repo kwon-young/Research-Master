@@ -1,0 +1,45 @@
+<html>
+<head>
+<!--
+     NOTE:
+     To include graphics on this page, place the graphics in the public subdirectory
+  and use links such as:
+     <img src="/public/logo.gif">
+     It is important to use /public/ instead of just public/ since some EZproxy
+     login URLs are not be relative to /
+-->
+</head>
+<body>
+<img src="/public/headerbar_accueil_bg.png">
+<h3>
+Charte d'utilisation des ressources &eacute;lectroniques
+</h3>
+
+<p>
+En tant que biblioth&egrave;que associ&eacute;e au Service Commun de la Documentation de l'UBO, le CRD propose aux personnels, enseignants et &eacute;tudiants de l'ENIB des acc&egrave;s &agrave; certaines bases de donn&eacute;es auxquelles il a souscrit.
+</p>
+
+<h4>
+Droits et devoirs des utilisateurs
+</h4>
+<p>
+Les utilisateurs autoris&eacute;s peuvent lire, imprimer ou t&eacute;l&eacute;charger en un exemplaire des articles isol&eacute;s, ceci &agrave; des fins d'enseignement, de recherche et pour un usage personnel.
+</p>
+<p>
+Il est interdit &agrave; tous les utilisateurs : d'imprimer ou t&eacute;l&eacute;charger massivement des articles de revues, de copier tout ou partie d'une base de donn&eacute;es mais &eacute;galement de distribuer ou rendre accessibles ces bases de donn&eacute;es &agrave; titre payant ou gracieux, &agrave; des personnes ext&eacute;rieures &agrave; l'enib.
+</p>
+<p>
+Les utilisateurs doivent &eacute;galement <b>respecter le droit d'auteur</b>.
+</p>
+<p>
+</p>
+
+<hr />
+<form action="/login" method="post">
+<input type="hidden" name="url" value="http://staticieeexplore.ieee.org/assets/img/bg.glance.panel.bot.jpg" />
+Identifiant : &nbsp&nbsp&nbsp&nbsp <input type="text"     name="user" /><br />
+Mot de passe : <input type="password" name="pass" /><br />
+<input type="submit" value="Login" />
+</form>
+</body>
+</html>
